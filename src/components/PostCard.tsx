@@ -12,6 +12,7 @@ import { DeleteAlertDialog } from "./DeleteAlertDialog";
 import { Button } from "./ui/button";
 import { HeartIcon, LogInIcon, MessageCircleIcon, SendIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
+import { AICompletionButton } from "./AICompletionButton";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 type Post = Posts[number];
@@ -55,6 +56,10 @@ function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
     } finally {
       setIsCommenting(false);
     }
+  };
+
+  const handleAICompletion = (completion: string) => {
+    setNewComment(completion);
   };
 
   const handleDeletePost = async () => {
@@ -193,7 +198,13 @@ function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
                       onChange={(e) => setNewComment(e.target.value)}
                       className="min-h-[80px] resize-none"
                     />
-                    <div className="flex justify-end mt-2">
+                    <div className="flex items-center justify-between mt-2">
+                      <AICompletionButton
+                        currentText={newComment}
+                        postContent={post.content || undefined}
+                        onCompletion={handleAICompletion}
+                        disabled={isCommenting}
+                      />
                       <Button
                         size="sm"
                         onClick={handleAddComment}
